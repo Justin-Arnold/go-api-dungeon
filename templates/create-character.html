@@ -1,0 +1,26 @@
+{{define "title"}}Creating Character: {{.CharacterName}}{{end}}
+
+{{define "head"}}
+<script>
+    // When the page loads, store the character name in localStorage
+    document.addEventListener('DOMContentLoaded', function() {
+        // Store the character name
+        localStorage.setItem('characterName', '{{.CharacterName}}');
+        
+        // After a brief delay to show the creation message,
+        // redirect to the start page
+        setTimeout(() => {
+            window.location.href = '/start';
+        }, 2000); // Redirect after 2 seconds
+    });
+</script>
+{{end}}
+
+{{define "content"}}
+<div class="text-center">
+    <h1 class="text-3xl font-bold mb-4">Creating Your Character</h1>
+    <p class="text-xl">Welcome, {{.CharacterName}}!</p>
+    <p class="mt-4">Your character is being created...</p>
+    <p class="mt-2 text-gray-600">You will be redirected to the start page shortly.</p>
+</div>
+{{end}}

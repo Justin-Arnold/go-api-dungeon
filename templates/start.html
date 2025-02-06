@@ -1,13 +1,39 @@
 {{define "title"}}Getting Started{{end}}
 
 {{define "head"}}
-    <!-- Add any page-specific head elements here -->
+<script>
+    function checkCharacter() {
+        const characterName = localStorage.getItem('characterName');
+        const contentDiv = document.getElementById('content');
+        
+        if (!characterName) {
+            contentDiv.innerHTML = `
+                <div class="text-center">
+                    <h1 class="text-3xl font-bold mb-4">No Character Found</h1>
+                    <p class="mb-4">You need to create a character before starting your adventure.</p>
+                    <p class="text-gray-600">Use the endpoint: /create-character/[name]</p>
+                </div>
+            `;
+            return;
+        }
+        
+        document.getElementById('characterName').textContent = characterName;
+    }
+
+    document.addEventListener('DOMContentLoaded', checkCharacter);
+</script>
 {{end}}
 
 {{define "content"}}
-    <h1>Start</h1>
-    <p>
-    To enter the dungeon, you must first create your character
-    </p>
+<div id="content" class="max-w-2xl mx-auto">
+    <h1 class="text-3xl font-bold mb-6">Adventure Start</h1>
+    <div class="bg-gray-100 p-6 rounded-lg mb-6">
+        <h2 class="text-xl font-semibold mb-2">Your Character</h2>
+        <p>Name: <span id="characterName" class="font-medium">Loading...</span></p>
+    </div>
+    <div class="prose">
+        <h2>Begin Your Journey</h2>
+        <p>Your adventure in the dungeon begins here. Use the available commands to navigate and survive.</p>
+    </div>
+</div>
 {{end}}
-
