@@ -1,0 +1,50 @@
+{{define "title"}}Fight{{end}}
+
+{{define "head"}}
+<script>
+    // document.addEventListener('DOMContentLoaded', function() {
+    //     const currentEnemy =  window.GameState.get('currentEnemy')
+    //     const contentDiv = document.getElementById('content');
+    //     contentDiv.innerHTML = currentEnemy
+    //     // Make a fetch request to get initial game state
+    //     fetch('/room/', {
+    //         headers: {
+    //             'Accept': 'application/json'
+    //         }
+    //     })
+    //     .then(response => {
+    //         if (!response.ok) {
+    //             throw new Error('Network response was not ok');
+    //         }
+    //         console.log('fafaf', response)
+    //         return response.json()
+    //     })
+    //     .then(gameState => {
+    //         console.log(1, gameState)
+    //         // Save all returned game state
+    //         Object.entries(gameState).forEach(([key, value]) => {
+    //             if (key !== 'redirectTo') {
+    //                 window.GameState.save(key, value);
+    //             }
+    //         });
+    //     })
+    //     .catch(error => {
+    //         console.error('Error:', error);
+    //         // Handle error (show message to user, etc.)
+    //     });
+    // });
+   
+</script>
+{{end}}
+
+{{define "combat-room"}}
+<h1>
+    An Enemy Has Appeared!
+</h1>
+<p>
+    Get ready for a fight.
+</p>
+<p id="enemy-type">
+    loading...
+</p>
+{{end}}

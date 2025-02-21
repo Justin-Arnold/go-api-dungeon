@@ -4,6 +4,63 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{template "title" .}}</title>
+
+    <script>
+        window.APP_PREFIX = 'go_api_dungeon_';
+
+        const originalFetch = window.fetch;
+        window.fetch = function() {
+            // Get all game data from localStorage with prefixed keys
+            const gameData = {
+                characterName: localStorage.getItem(window.APP_PREFIX + 'characterName'),
+                characterClass: localStorage.getItem(window.APP_PREFIX + 'characterClass'),
+                currentRoom: localStorage.getItem(window.APP_PREFIX + 'currentRoom'),
+                // Add any other game state you want to track
+            };
+
+            // Create a new options object, copying the original if it exists
+            let options = arguments[1] ? { ...arguments[1] } : {};
+            
+            // Ensure headers object exists
+            options.headers = {
+                ...(options.headers || {}),  // Preserve existing headers
+                'X-Character-Name': gameData.characterName || '',
+                'X-Character-Class': gameData.characterClass || '',
+                'X-Current-Room': gameData.currentRoom || '',
+            };
+
+            // Call original fetch with the URL and our modified options
+            return originalFetch(arguments[0], options);
+        };
+
+        window.GameState = {
+            save: function(key, value) {
+                localStorage.setItem(window.APP_PREFIX + key, value);
+            },
+            
+            get: function(key) {
+                return localStorage.getItem(window.APP_PREFIX + key);
+            },
+            
+            updateState: function(gameState) {
+                Object.keys(gameState).forEach(key => {
+                    const value = gameState[key]
+                    if (value === null) {
+                        localStorage.removeItem(window.APP_PREFIX + key)
+                    } else {
+                        this.save(key, gameState[key])
+                    }
+                    
+                })
+            },
+
+            saveCharacter: function(character) {
+                this.save('characterName', character.name);
+                this.save('characterClass', character.class);
+                // Add other character properties as needed
+            }
+        };
+    </script>
     <!-- Tailwind CSS CDN -->
     <!-- <script src="https://cdn.tailwindcss.com"></script> -->
     {{template "head" .}}

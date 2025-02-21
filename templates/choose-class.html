@@ -1,22 +1,29 @@
-{{define "title"}}Creating Character: {{.CharacterName}}{{end}}
+{{define "title"}}Choosing Class: {{.CharacterClass}}{{end}}
 
 {{define "head"}}
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         // Make a fetch request to get initial game state
-        fetch('/create-character/{{.CharacterName}}', {
+        fetch('/choose-class/{{.CharacterClass}}', {
             headers: {
                 'Accept': 'application/json'
             }
         })
         .then(response => {
             if (!response.ok) {
+                const contentDiv = document.getElementById('content');
+                contentDiv.innerHTML = `
+                    <div class="text-center">
+                        <h1 class="text-3xl font-bold mb-4">No Character Created</h1>
+                        <p class="mb-4">You need to create a character before choosing a class.</p>
+                        <p class="text-gray-600">Use the endpoint: /create-character/[name]</p>
+                    </div>
+                `;
                 throw new Error('Network response was not ok');
             }
             return response.json()
         })
         .then(gameState => {
-            console.log(1, gameState)
             // Save all returned game state
             Object.entries(gameState).forEach(([key, value]) => {
                 window.GameState.save(key, value);
@@ -34,18 +41,10 @@
 {{end}}
 
 {{define "content"}}
-<div class="text-center">
-    <h1 class="text-3xl font-bold mb-4">Creating Your Character</h1>
-    <p class="text-xl">Welcome, {{.CharacterName}}!</p>
-    <p class="mt-4">Choose your class:</p>
-
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto mt-8">
-        {{range .Classes}}
-        <div class="border rounded-lg p-6 hover:shadow-lg transition-shadow">
-            <h2 class="text-xl font-bold mb-2">{{.Type}}</h2>
-            <p class="mb-4">{{.Description}}</p>
-        </div>
-        {{end}}
-    </div>
+<div id="content" class="text-center">
+    <h1 class="text-3xl font-bold mb-4">Welcome, {{.CharacterClass}}</h1>
+    <p class="mt-4">
+        You are ready to begin your adventure!
+    </p>
 </div>
 {{end}}

@@ -1,0 +1,115 @@
+{{define "title"}}Getting Started{{end}}
+
+{{define "head"}}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        fetch('/room/', {
+            headers: {
+                'Accept': 'application/json'
+            }
+        })
+        .then(response => {
+            console.log("res", response )
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            if (response.redirected) {
+                window.location.href = response.url;
+            }
+            return response.json()
+        })
+        .then(gameState => {
+            console.log("test")
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            // Handle error (show message to user, etc.)
+        });
+        const roomType =  window.GameState.get('currentRoomType')
+         // Hide all room types first
+        document.querySelectorAll('.room-content').forEach(el => {
+            el.style.display = 'none';
+        });
+
+        const currentRoom = document.getElementById(roomType.toLowerCase() + '-room');
+        switch (roomType) {
+            case "COMBAT":
+                // Show the current room type
+                if (currentRoom) {
+                    currentRoom.style.display = 'block';
+                    const element = document.getElementById('enemy-type')
+                    const enemyType = window.GameState.get('currentEnemy')
+                    element.innerHTML = enemyType
+                }
+            case "EMPTY":
+                if (currentRoom) {
+                    currentRoom.style.display = 'block';
+                }
+            case "EVENT":
+                console.log(currentRoom)
+                if (currentRoom) {
+                    console.log(1)
+                    currentRoom.style.display = 'block';
+                    const element = document.getElementById('choice-type')
+                    const eventType = window.GameState.get('currentEvent')
+                    element.innerHTML = "This feels like " + eventType
+                }
+            case "TREASURE":
+                if (currentRoom) {
+                    currentRoom.style.display = 'block';
+                    const element = document.getElementById('treasure-type')
+                    const treasureName = window.GameState.get('treasureName')
+                    element.innerHTML = "Is that a " + treasureName + "!?"
+                }
+            default:
+                console.log('2')
+        }
+
+    //     // Make a fetch request to get initial game state
+    //     fetch('/room/', {
+    //         headers: {
+    //             'Accept': 'application/json'
+    //         }
+    //     })
+    //     .then(response => {
+    //         if (!response.ok) {
+    //             throw new Error('Network response was not ok');
+    //         }
+    //         console.log('fafaf', response)
+    //         return response.json()
+    //     })
+    //     .then(gameState => {
+    //         console.log(1, gameState)
+    //         // Save all returned game state
+    //         Object.entries(gameState).forEach(([key, value]) => {
+    //             if (key !== 'redirectTo') {
+    //                 window.GameState.save(key, value);
+    //             }
+    //         });
+    //     })
+    //     .catch(error => {
+    //         console.error('Error:', error);
+    //         // Handle error (show message to user, etc.)
+    //     });
+    });
+   
+</script>
+{{end}}
+
+{{define "content"}}
+    <div class="room-content" id="combat-room" style="display: none">
+        {{template "combat-room" .}}
+    </div>
+
+    <div class="room-content" id="event-room" style="display: none">
+        {{template "event-room" .}}
+    </div>
+
+    <div class="room-content" id="empty-room" style="display: none">
+        {{template "empty-room" .}}
+    </div>
+
+    <div class="room-content" id="treasure-room" style="display: none">
+        {{template "treasure-room" .}}
+    </div>
+{{end}}

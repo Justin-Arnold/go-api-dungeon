@@ -1,10 +1,10 @@
-{{define "title"}}Creating Character: {{.CharacterName}}{{end}}
+{{define "title"}}Traversing The Dungeon{{end}}
 
 {{define "head"}}
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         // Make a fetch request to get initial game state
-        fetch('/create-character/{{.CharacterName}}', {
+        fetch('/move/{{.MoveDirection}}', {
             headers: {
                 'Accept': 'application/json'
             }
@@ -13,17 +13,24 @@
             if (!response.ok) {
                 throw new Error('Network response was not ok');
             }
+            if (response.redirected) {
+                window.location.href = response.url;
+            }
             return response.json()
         })
         .then(gameState => {
             console.log(1, gameState)
             // Save all returned game state
             Object.entries(gameState).forEach(([key, value]) => {
-                window.GameState.save(key, value);
+                if (key !== 'redirectTo') {
+                    window.GameState.save(key, value);
+                }
             });
 
-            // Redirect to class selection
-            // window.location.href = '/choose-class';
+            // Then redirect
+            if (gameState.redirectTo) {
+                window.location.href = gameState.redirectTo;
+            }
         })
         .catch(error => {
             console.error('Error:', error);
@@ -34,18 +41,10 @@
 {{end}}
 
 {{define "content"}}
-<div class="text-center">
-    <h1 class="text-3xl font-bold mb-4">Creating Your Character</h1>
-    <p class="text-xl">Welcome, {{.CharacterName}}!</p>
-    <p class="mt-4">Choose your class:</p>
-
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto mt-8">
-        {{range .Classes}}
-        <div class="border rounded-lg p-6 hover:shadow-lg transition-shadow">
-            <h2 class="text-xl font-bold mb-2">{{.Type}}</h2>
-            <p class="mb-4">{{.Description}}</p>
-        </div>
-        {{end}}
-    </div>
-</div>
+<h1>
+    Moving {{.MoveDirection}}...
+</h1>
+<p>
+    What could be next?
+</p>
 {{end}}

@@ -1,0 +1,32 @@
+{{define "title"}}Reset Game{{end}}
+
+{{define "head"}}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Make a fetch request to get initial game state
+        fetch('/reset', {
+            headers: {
+                'Accept': 'application/json'
+            }
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json()
+        })
+        .then(gameState => {
+            window.GameState.updateState(gameState)
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    });
+</script>
+{{end}}
+
+{{define "content"}}
+
+All local game state has been reset
+
+{{end}}

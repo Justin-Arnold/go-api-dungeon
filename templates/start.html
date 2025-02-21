@@ -2,11 +2,14 @@
 
 {{define "head"}}
 <script>
+    let needsCharacter = false
+
     function checkCharacter() {
-        const characterName = localStorage.getItem('characterName');
+        const characterName = window.GameState.get('characterName')
         const contentDiv = document.getElementById('content');
         
         if (!characterName) {
+            needsCharacter = true
             contentDiv.innerHTML = `
                 <div class="text-center">
                     <h1 class="text-3xl font-bold mb-4">No Character Found</h1>
@@ -15,12 +18,39 @@
                 </div>
             `;
             return;
+        } else {
+            needsCharacter = false
         }
         
         document.getElementById('characterName').textContent = characterName;
     }
 
-    document.addEventListener('DOMContentLoaded', checkCharacter);
+    function checkClass() {
+        if (needsCharacter) {
+            // Return early to only show one error at a time
+            return
+        }
+        const characterClass = window.GameState.get('characterClass')
+        const contentDiv = document.getElementById('content');
+        
+        if (!characterClass) {
+            contentDiv.innerHTML = `
+                <div class="text-center">
+                    <h1 class="text-3xl font-bold mb-4">No Class Selected</h1>
+                    <p class="mb-4">You need to select a class before starting your adventure.</p>
+                    <p class="text-gray-600">Use the endpoint: /choose-class/[name]</p>
+                </div>
+            `;
+            return;
+        }
+        
+        document.getElementById('characterClass').textContent = characterClass;
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        checkCharacter()
+        checkClass()
+    });
 </script>
 {{end}}
 
@@ -30,6 +60,7 @@
     <div class="bg-gray-100 p-6 rounded-lg mb-6">
         <h2 class="text-xl font-semibold mb-2">Your Character</h2>
         <p>Name: <span id="characterName" class="font-medium">Loading...</span></p>
+        <p>Class: <span id="characterClass" class="font-medium">Loading...</span></p>
     </div>
     <div class="prose">
         <h2>Begin Your Journey</h2>
