@@ -5,35 +5,14 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"strings"
+
+	"github.com/Justin-Arnold/go-api-dungeon/internal/router"
 )
 
 // templateData is a struct to hold any data we want to pass to our templates
 type templateData struct {
 	CharacterName string
 	// Add fields as needed
-}
-
-func handleCreateCharacter(w http.ResponseWriter, r *http.Request) {
-	// Extract the character name from the URL path
-	// Split the path into parts: ["", "create-character", "name"]
-	pathParts := strings.Split(r.URL.Path, "/")
-	if len(pathParts) != 3 {
-		http.NotFound(w, r)
-		return
-	}
-
-	characterName := pathParts[2]
-	if characterName == "" {
-		http.Error(w, "Character name is required", http.StatusBadRequest)
-		return
-	}
-
-	data := &templateData{
-		CharacterName: characterName,
-	}
-
-	renderTemplate(w, "create-character", data)
 }
 
 func renderTemplate(w http.ResponseWriter, tmpl string, data *templateData) {
@@ -59,10 +38,6 @@ func handleHome(w http.ResponseWriter, r *http.Request) {
 	renderTemplate(w, "index", &templateData{})
 }
 
-func handleStart(w http.ResponseWriter, r *http.Request) {
-	renderTemplate(w, "start", &templateData{})
-}
-
 func main() {
 	port := os.Getenv("PORT")
 	if port == "" {
@@ -70,9 +45,7 @@ func main() {
 		log.Printf("defaulting to port %s", port)
 	}
 
-	// Register route handlers
-	http.HandleFunc("/create-character/", handleCreateCharacter) // Most specific route first
-	http.HandleFunc("/start", handleStart)                       // Then other specific routes
+	router.Init()
 	http.HandleFunc("/", handleHome)
 
 	log.Printf("starting server on port %s", port)
