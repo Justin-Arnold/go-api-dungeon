@@ -1,5 +1,4 @@
-// internal/router/middleware.go
-package router
+package middleware
 
 import (
 	"context"
@@ -13,6 +12,16 @@ type GameState struct {
 	CharacterClass string
 	CurrentRoom    string
 	// Add other state as needed
+}
+
+type Middleware func(next http.HandlerFunc) http.HandlerFunc
+
+func RegisterMiddleware(request http.HandlerFunc, middleware ...Middleware) http.HandlerFunc {
+	for _, handler := range middleware {
+		handler(request)
+	}
+	return func(w http.ResponseWriter, r *http.Request) {}
+
 }
 
 func RequireGameState(next http.HandlerFunc) http.HandlerFunc {
