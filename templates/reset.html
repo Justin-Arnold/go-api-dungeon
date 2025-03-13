@@ -2,7 +2,7 @@
 
 {{define "head"}}
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', async function() {
         // Make a fetch request to get initial game state
         fetch('/reset', {
             headers: {
@@ -10,16 +10,19 @@
             }
         })
         .then(response => {
+            console.log('r', response)
             if (!response.ok) {
                 throw new Error('Network response was not ok');
             }
             return response.json()
         })
         .then(gameState => {
+            console.log('gs', gameState)
             window.GameState.updateState(gameState)
+            window.location.href = '/';
         })
         .catch(error => {
-            console.error('Error:', error);
+            console.error('Error:', JSON.stringify(error));
         });
     });
 </script>

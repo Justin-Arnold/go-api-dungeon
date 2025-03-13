@@ -10,6 +10,7 @@
             }
         })
         .then(response => {
+            console.log('r', response)
             if (!response.ok) {
                 const contentDiv = document.getElementById('content');
                 contentDiv.innerHTML = `
@@ -24,16 +25,15 @@
             return response.json()
         })
         .then(gameState => {
+            console.log('gs', gameState)
             // Save all returned game state
-            Object.entries(gameState).forEach(([key, value]) => {
-                window.GameState.save(key, value);
-            });
+            window.GameState.updateState(gameState)
 
             // Redirect to class selection
             // window.location.href = '/choose-class';
         })
         .catch(error => {
-            console.error('Error:', error);
+            console.error('Error:', JSON.stringify(error));
             // Handle error (show message to user, etc.)
         });
     });

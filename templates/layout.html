@@ -4,12 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{template "title" .}}</title>
+    <link rel="icon" type="image/webp" href="/static/favicon.webp">
 
     <script>
         window.APP_PREFIX = 'go_api_dungeon_';
 
         const originalFetch = window.fetch;
-        window.fetch = function() {
+        window.fetch = async function() {
             // Get all game data from localStorage with prefixed keys
             const gameData = {
                 characterName: localStorage.getItem(window.APP_PREFIX + 'characterName'),
@@ -21,6 +22,10 @@
             // Create a new options object, copying the original if it exists
             let options = arguments[1] ? { ...arguments[1] } : {};
             
+            // Check if this is a JSON request
+            const isJsonRequest = options.headers && options.headers['Accept'] === 'application/json';
+            
+
             // Ensure headers object exists
             options.headers = {
                 ...(options.headers || {}),  // Preserve existing headers
@@ -29,8 +34,27 @@
                 'X-Current-Room': gameData.currentRoom || '',
             };
 
-            // Call original fetch with the URL and our modified options
-            return originalFetch(arguments[0], options);
+            try {
+                const response = await originalFetch(arguments[0], options);
+                console.log('1', response)
+                if (!response.ok) {
+                    console.log('test')
+                    throw new Error('Network response was not ok');
+                }
+                console.log(4, response)
+
+                // Only handle redirects for non-JSON requests
+                if (response.redirected) {
+                    console.log('333', response)
+                    window.location.href = response.url;
+                    return response
+                }
+
+                return response;
+            } catch (error) {
+                console.error('Fetch error:', error);
+                throw error;
+            }
         };
 
         window.GameState = {
@@ -65,7 +89,7 @@
     <!-- <script src="https://cdn.tailwindcss.com"></script> -->
     {{template "head" .}}
 </head>
-<body>
+<body style="background-color: #919081;">
     <nav>
         <!-- Your navigation content -->
     </nav>
@@ -78,4 +102,6 @@
         <!-- Your footer content -->
     </footer>
 </body>
+
 </html>
+

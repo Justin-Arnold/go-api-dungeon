@@ -39,7 +39,12 @@
                     currentRoom.style.display = 'block';
                     const element = document.getElementById('enemy-type')
                     const enemyType = window.GameState.get('currentEnemy')
-                    element.innerHTML = enemyType
+                    // element.innerHTML = enemyType
+                    //create child of element that is an image
+                    element.innerHTML = `
+                        <p>${enemyType}</p>
+                        <img id="enemy-image" width="300px" src="/static/enemy-${enemyType.toLowerCase().replaceAll(" ", "-")}.webp" />
+                    `;
                 }
             case "EMPTY":
                 if (currentRoom) {
