@@ -1,0 +1,12 @@
+{{define "title"}}Oh No!{{end}}
+
+{{define "head"}}{{end}}
+
+{{define "content"}}
+<h1>
+{{or .ErrorTitle "Error?"}}
+</h1>
+<p>
+{{or .ErrorMessage "Error! Something went wrong."}}
+</p>
+{{end}}
