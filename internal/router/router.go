@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/Justin-Arnold/go-api-dungeon/internal/dungeon"
+	"github.com/Justin-Arnold/go-api-dungeon/internal/middleware"
 )
 
 type TemplateData struct {
@@ -15,16 +16,30 @@ type TemplateData struct {
 	MoveDirection  dungeon.Direction
 	CurrentEnemy   string
 	RedirectTo     string
+	ErrorTitle     string
+	ErrorMessage   string
 	// Add fields as needed
 }
 
 func Init() {
 	http.HandleFunc("/create-character/", HandleCreateCharacter)
-	http.HandleFunc("/choose-class/", RequireGameState(HandleChooseClass))
-	http.HandleFunc("/move/", RequireGameState(HandleMove))
-	http.HandleFunc("/room/", RequireGameState(HandleRoom))
+	http.HandleFunc("/choose-class/", middleware.Register(HandleChooseClass,
+		middleware.RequireGameState,
+		middleware.RequireCharacterName,
+	))
+	http.HandleFunc("/move/", middleware.Register(HandleMove,
+		middleware.RequireGameState,
+		middleware.RequireCharacterName,
+		middleware.RequireCharacterClass,
+	))
+	http.HandleFunc("/room/", middleware.Register(HandleRoom,
+		middleware.RequireGameState,
+		middleware.RequireCharacterName,
+		middleware.RequireCharacterClass,
+	))
 	http.HandleFunc("/reset/", HandleReset)
 	http.HandleFunc("/start", HandleStart)
+	http.HandleFunc("/error", HandleError)
 }
 
 func RenderTemplate(w http.ResponseWriter, tmpl string, data *TemplateData) {
