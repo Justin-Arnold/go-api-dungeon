@@ -63,7 +63,7 @@ func CreateDungeon() *Dungeon {
 		ID:   "room4",
 		Type: RoomTypeEvent,
 		Connections: map[Direction]string{
-			DirectionUp:    "Room2",
+			DirectionUp:    "room2",
 			DirectionRight: "room6",
 		},
 		Content: EventContent{
