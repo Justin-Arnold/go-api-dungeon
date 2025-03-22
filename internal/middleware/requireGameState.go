@@ -19,10 +19,8 @@ func RequireGameState(next http.Handler) http.Handler {
 				CharacterClass: r.Header.Get("X-Character-Class"),
 				CurrentRoom:    r.Header.Get("X-Current-Room"),
 			}
-			fmt.Print("test2")
 			// Add the game state to the request context
 			ctx := context.WithValue(r.Context(), "gameState", gameState)
-			fmt.Print("test3")
 			next.ServeHTTP(w, r.WithContext(ctx))
 			return
 		}
