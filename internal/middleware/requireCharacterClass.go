@@ -2,7 +2,6 @@ package middleware
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 )
 
@@ -12,7 +11,6 @@ func RequireCharacterClass(next http.Handler) http.Handler {
 		if r.Header.Get("Accept") == "application/json" {
 
 			gameState, ok := r.Context().Value("gameState").(GameState)
-			fmt.Print("test")
 			if !ok {
 				w.Header().Set("Content-Type", "application/json")
 				w.Header().Set("Location", "/start")

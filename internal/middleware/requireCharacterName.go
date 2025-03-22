@@ -2,15 +2,12 @@ package middleware
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 )
 
 func RequireCharacterName(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		fmt.Print("test12")
 		if r.Header.Get("Accept") == "application/json" {
-			fmt.Print("test11")
 			gameState, ok := r.Context().Value("gameState").(GameState)
 			if !ok {
 				w.Header().Set("Content-Type", "application/json")
@@ -27,7 +24,6 @@ func RequireCharacterName(next http.Handler) http.Handler {
 				})
 				return
 			}
-			fmt.Print("test13")
 
 			// Check if character name exists
 			if gameState.CharacterName == "" {
