@@ -25,6 +25,7 @@ func CreateDungeon() *Dungeon {
 			EnemyType:   "goblin",
 			Description: "A fight",
 			HP:          20,
+			MaxHP:       20,
 			Damage:      5,
 			Rewards:     Reward{},
 		},
@@ -41,6 +42,7 @@ func CreateDungeon() *Dungeon {
 		Content: CombatContent{
 			EnemyType: "large goblin",
 			HP:        30,
+			MaxHP:     30,
 			Damage:    7,
 			Rewards:   Reward{},
 		},
