@@ -48,8 +48,12 @@ func Init() {
 		middleware.RequireCharacterClass,
 	))
 	http.HandleFunc("/reset/", HandleReset)
-	http.HandleFunc("/start", HandleStart)
-	http.HandleFunc("/error", HandleError)
+	http.HandleFunc("/start", middleware.Register(HandleStart,
+		middleware.RequireNoProgression,
+	))
+	http.HandleFunc("/error/", middleware.Register(HandleError,
+		middleware.BlockDirectAccess,
+	))
 }
 
 func RenderTemplate(w http.ResponseWriter, tmpl string, data *TemplateData) {
@@ -60,6 +64,9 @@ func RenderTemplate(w http.ResponseWriter, tmpl string, data *TemplateData) {
 		"templates/room-types/treasure-room.html",
 		"templates/room-types/empty-room.html",
 		"templates/room-types/event-room.html",
+		"templates/errors/404.html",
+		"templates/errors/invalid-command.html",
+		"templates/errors/missing-class.html",
 		"templates/"+tmpl+".html",
 	))
 
