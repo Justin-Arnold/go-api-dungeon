@@ -1,0 +1,38 @@
+{{define "title"}}You Look Around{{end}}
+
+{{define "head"}}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        fetch('/attack/', {
+            headers: {
+                'Accept': 'application/json'
+            }
+        }).then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json()
+        }).then(gameState => {
+
+            console.log(1, gameState)
+            // Save all returned game state
+            Object.entries(gameState).forEach(([key, value]) => {
+                if (key !== 'redirectTo') {
+                    window.GameState.save(key, value);
+                }
+            });
+
+            window.location.href = '/look/';
+        }).catch(error => {
+            console.error('Error:', error);
+            // Handle error (show message to user, etc.)
+        });
+    });
+</script>
+{{end}}
+
+{{define "content"}}
+<p id="initial-content">
+    You look around
+</p>
+{{end}}
