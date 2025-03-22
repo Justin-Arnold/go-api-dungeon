@@ -65,6 +65,17 @@
             get: function(key) {
                 return localStorage.getItem(window.APP_PREFIX + key);
             },
+
+            getAll: function() {
+                const gameState = {};
+                for (let i = 0; i < localStorage.length; i++) {
+                    const key = localStorage.key(i);
+                    if (key.startsWith(window.APP_PREFIX)) {
+                        gameState[key.replace(window.APP_PREFIX, '')] = localStorage.getItem(key);
+                    }
+                }
+                return gameState;
+            },
             
             updateState: function(gameState) {
                 Object.keys(gameState).forEach(key => {
