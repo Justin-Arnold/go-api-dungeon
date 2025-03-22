@@ -38,7 +38,7 @@ type Character struct {
 	XP    int       `json:"xp"`
 }
 
-var baseStats = map[ClassType]Stats{
+var BaseStats = map[ClassType]Stats{
 	ClassShinobi: {
 		CurrentHP:   90,   // Base 100
 		MaxHP:       90,   // Base 100
@@ -52,7 +52,7 @@ var baseStats = map[ClassType]Stats{
 }
 
 func NewCharacter(name string, class ClassType) (*Character, error) {
-	stats, ok := baseStats[class]
+	stats, ok := BaseStats[class]
 	if !ok {
 		return nil, errors.New("invalid character class")
 	}
