@@ -18,6 +18,8 @@
             const gameData = {
                 characterName: localStorage.getItem(window.APP_PREFIX + 'characterName'),
                 characterClass: localStorage.getItem(window.APP_PREFIX + 'characterClass'),
+                characterDamage:  localStorage.getItem(window.APP_PREFIX + 'characterDamage'),
+                currentEnemyHP: localStorage.getItem(window.APP_PREFIX + 'currentEnemyHP'),
                 currentRoom: localStorage.getItem(window.APP_PREFIX + 'currentRoom'),
                 // Add any other game state you want to track
             };
@@ -34,6 +36,8 @@
                 ...(options.headers || {}),  // Preserve existing headers
                 'X-Character-Name': gameData.characterName || '',
                 'X-Character-Class': gameData.characterClass || '',
+                'X-Character-Damage': gameData.characterDamage || '',
+                'X-Current-Enemy-Hp': gameData.currentEnemyHP || '',
                 'X-Current-Room': gameData.currentRoom || '',
             };
 
