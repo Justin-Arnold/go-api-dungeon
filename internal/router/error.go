@@ -3,6 +3,7 @@ package router
 import (
 	"fmt"
 	"net/http"
+	"strings"
 )
 
 func HandleError(w http.ResponseWriter, r *http.Request) {
@@ -15,19 +16,12 @@ func HandleError(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var errorTitle string
-	// var errorMessage string
 
-	//switch case for what referer ends in
-	// switch {
-	// Regex for /choose-class/???
-	// case regexp.MustCompile(`/choose-class/\w+$`).MatchString(referer):
-	// 	errorTitle = "Choose Class Error"
-	// 	errorMessage = strings.Split(referer, "/choose-class/")[1]
-	// //default case
-	// default:
-	// 	errorTitle = "Error"
-	// 	errorMessage = "An error occurred"
-	// }
+	pathParts := strings.Split(r.URL.Path, "/")
+	if len(pathParts) != 3 {
+		http.NotFound(w, r)
+		return
+	}
 
 	data := &TemplateData{
 		ErrorTitle: errorTitle,
@@ -35,5 +29,14 @@ func HandleError(w http.ResponseWriter, r *http.Request) {
 		ErrorMessage: fmt.Sprintf("%+v", r),
 	}
 
-	RenderTemplate(w, "error", data)
+	errorType := pathParts[2]
+
+	switch errorType {
+	case "invalid-command":
+		RenderTemplate(w, "errors/invalid-command", data)
+		return
+	default:
+		RenderTemplate(w, "errors/404", data)
+		return
+	}
 }
