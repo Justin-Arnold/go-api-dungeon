@@ -25,9 +25,15 @@ func HandleChooseClass(w http.ResponseWriter, r *http.Request) {
 	if r.Header.Get("Accept") == "application/json" {
 		w.Header().Set("Content-Type", "application/json")
 
+		classType := dungeon.ClassType(className)
+
+		// get class info
+		classStats := dungeon.BaseStats[classType]
+
 		// Return game state as JSON
 		gameState := map[string]interface{}{
-			"characterClass": className,
+			"characterClass":  className,
+			"characterDamage": classStats.Damage,
 			// Add any other initial state you want
 		}
 
