@@ -39,10 +39,16 @@
                     currentRoom.style.display = 'block';
                     const element = document.getElementById('enemy-type')
                     const enemyType = window.GameState.get('currentEnemy')
+                    const currentEnemyHp = window.GameState.get('currentEnemyHP')
+                    const currentEnemyMaxHp = window.GameState.get('currentEnemyMaxHP')
                     // element.innerHTML = enemyType
                     //create child of element that is an image
                     element.innerHTML = `
-                        <p>${enemyType}</p>
+                        <p class="w-full text-lg">${enemyType}</p>
+                        <div class="w-full bg-slate-400 rounded mt-2 mb-4 relative">
+                            <div class="h-6 bg-red-700 rounded" style="width: ${currentEnemyHp / currentEnemyMaxHp * 100}%"></div>
+                            <p class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 font-mono text-sm">${currentEnemyHp} / ${currentEnemyMaxHp}</p>
+                        </div>
                         <img id="enemy-image" width="300px" src="/static/enemy-${enemyType.toLowerCase().replaceAll(" ", "-")}.webp" />
                     `;
                 }
