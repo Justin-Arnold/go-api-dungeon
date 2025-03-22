@@ -31,7 +31,6 @@ type Room struct {
 type CombatContent struct {
 	EnemyType   string `json:"enemyType"`
 	Description string `json:"description"`
-	MaxHP       int    `json:"maxHP"`
 	HP          int    `json:"hp"`
 	Damage      int    `json:"damage"`
 	Rewards     Reward `json:"rewards"`

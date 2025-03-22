@@ -63,7 +63,7 @@ func HandleMove(w http.ResponseWriter, r *http.Request) {
 			gameState["currentEnemy"] = content.EnemyType
 			gameState["currentEnemyHP"] = content.HP
 			gameState["currentEnemyDamage"] = content.Damage
-			gameState["currentEnemyMaxHP"] = content.MaxHP
+			gameState["currentEnemyMaxHP"] = content.HP
 			fmt.Print("Start1")
 		case dungeon.EventContent:
 			gameState["currentEvent"] = content.EventType
