@@ -2,7 +2,6 @@ package middleware
 
 import (
 	"context"
-	"fmt"
 	"net/http"
 )
 
@@ -12,7 +11,6 @@ func RequireGameState(next http.Handler) http.Handler {
 		// log.Printf("DEBUG: Request headers: %+v", r.Header)
 		// Only check game state for API requests
 		if r.Header.Get("Accept") == "application/json" {
-			fmt.Print("test1")
 
 			gameState := GameState{
 				CharacterName:  r.Header.Get("X-Character-Name"),
