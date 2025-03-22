@@ -337,6 +337,7 @@ func CreateDungeon() *Dungeon {
 		Content: CombatContent{
 			EnemyType: "Summoned Hell King",
 			HP:        100,
+			MaxHP:     100,
 			Damage:    30,
 			Rewards:   Reward{},
 		},
