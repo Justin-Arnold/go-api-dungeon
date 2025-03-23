@@ -2,54 +2,12 @@
 
 {{define "head"}}
 <script>
-    let needsCharacter = false
-
-    function checkCharacter() {
-        const characterName = window.GameState.get('characterName')
-        const contentDiv = document.getElementById('content');
-        
-        if (!characterName) {
-            needsCharacter = true
-            contentDiv.innerHTML = `
-                <div class="text-center">
-                    <h1 class="text-3xl font-bold mb-4">No Character Found</h1>
-                    <p class="mb-4">You need to create a character before starting your adventure.</p>
-                    <p class="text-gray-600">Use the endpoint: /create-character/[name]</p>
-                </div>
-            `;
-            return;
-        } else {
-            needsCharacter = false
-        }
-        
-        document.getElementById('characterName').textContent = characterName;
-    }
-
-    function checkClass() {
-        if (needsCharacter) {
-            // Return early to only show one error at a time
-            return
-        }
-        const characterClass = window.GameState.get('characterClass')
-        const contentDiv = document.getElementById('content');
-        
-        if (!characterClass) {
-            contentDiv.innerHTML = `
-                <div class="text-center">
-                    <h1 class="text-3xl font-bold mb-4">No Class Selected</h1>
-                    <p class="mb-4">You need to select a class before starting your adventure.</p>
-                    <p class="text-gray-600">Use the endpoint: /choose-class/[name]</p>
-                </div>
-            `;
-            return;
-        }
-        
-        document.getElementById('characterClass').textContent = characterClass;
-    }
-
     document.addEventListener('DOMContentLoaded', () => {
-        checkCharacter()
-        checkClass()
+        fetch('/start', {
+            headers: {
+                'Accept': 'application/json'
+            }
+        })
     });
 </script>
 {{end}}
