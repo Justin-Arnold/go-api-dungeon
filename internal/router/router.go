@@ -49,6 +49,8 @@ func Init() {
 	))
 	http.HandleFunc("/reset/", HandleReset)
 	http.HandleFunc("/start", middleware.Register(HandleStart,
+		middleware.RequireCharacterName,
+		middleware.RequireCharacterClass,
 		middleware.RequireNoProgression,
 	))
 	http.HandleFunc("/error/", middleware.Register(HandleError,
@@ -67,6 +69,7 @@ func RenderTemplate(w http.ResponseWriter, tmpl string, data *TemplateData) {
 		"templates/errors/404.html",
 		"templates/errors/invalid-command.html",
 		"templates/errors/missing-class.html",
+		"templates/errors/missing-name.html",
 		"templates/"+tmpl+".html",
 	))
 
