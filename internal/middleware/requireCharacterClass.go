@@ -1,7 +1,7 @@
 package middleware
 
 import (
-	"encoding/json"
+	"fmt"
 	"net/http"
 )
 
@@ -10,36 +10,12 @@ func RequireCharacterClass(next http.Handler) http.Handler {
 
 		if r.Header.Get("Accept") == "application/json" {
 
-			gameState, ok := r.Context().Value("gameState").(GameState)
-			if !ok {
-				w.Header().Set("Content-Type", "application/json")
-				w.Header().Set("Location", "/start")
-				w.WriteHeader(http.StatusTemporaryRedirect) // 307
+			characterClass := r.Header.Get("X-Character-Class")
 
-				json.NewEncoder(w).Encode(map[string]interface{}{
-					"redirect": "/start",
-					"status":   "redirect_required",
-					// "missing": []string{
-					// 	// This helps the client understand what's missing
-					// 	getMissingFields(hasName, hasClass),
-					// },
-				})
-				return
-			}
-
-			if gameState.CharacterClass == "" {
-				w.Header().Set("Content-Type", "application/json")
-				w.Header().Set("Location", "/start")
-				w.WriteHeader(http.StatusTemporaryRedirect) // 307
-
-				json.NewEncoder(w).Encode(map[string]interface{}{
-					"redirect": "/start",
-					"status":   "redirect_required",
-					// "missing": []string{
-					// 	// This helps the client understand what's missing
-					// 	getMissingFields(hasName, hasClass),
-					// },
-				})
+			if characterClass == "" {
+				// When redirecting to an error page
+				fmt.Println("Character class not found")
+				RedirectToError(w, r, "missing-class", http.StatusTemporaryRedirect)
 				return
 			}
 

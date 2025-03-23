@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"fmt"
 	"net/http"
 	"strings"
 )
@@ -18,7 +19,11 @@ func BlockDirectAccess(next http.Handler) http.Handler {
 			// Check for our redirect cookie
 			cookie, err := r.Cookie("redirect-token")
 
+			fmt.Println("Error route accessed", cookie)
+			fmt.Println("Error route accessed", err)
+
 			if err == nil && cookie.Value == "true" {
+				fmt.Println("Redirect token found", cookie)
 				// This is a legitimate redirect, clear the cookie and allow access
 				clearCookie := &http.Cookie{
 					Name:     "redirect-token",
@@ -31,40 +36,26 @@ func BlockDirectAccess(next http.Handler) http.Handler {
 				}
 				http.SetCookie(w, clearCookie)
 
+				fmt.Println("Redirect token cleared", w)
+
 				// Allow access to the error page
+				fmt.Println("Error route accessed directly", cookie)
 				next.ServeHTTP(w, r)
 				return
 			}
 
-			// This appears to be direct access, set a cookie and redirect to the no-direct-access error
-			redirectCookie := &http.Cookie{
-				Name:     "redirect-token",
-				Value:    "true",
-				Path:     "/",
-				MaxAge:   10, // Very short-lived cookie
-				HttpOnly: true,
-				Secure:   true,
-				SameSite: http.SameSiteStrictMode,
-			}
-			http.SetCookie(w, redirectCookie)
+			// // If this is the "invalid-command" page and we're already coming from a redirect,
+			// // break the potential loop and just show the page
+			// if strings.Contains(r.URL.Path, "/error/invalid-command") &&
+			// 	strings.Contains(r.Referer(), "/error/") {
+			// 	fmt.Println("Preventing redirect loop, showing invalid-command page")
+			// 	next.ServeHTTP(w, r)
+			// 	return
+			// }
 
-			// Redirect to a specific error page for no direct access
-			http.Redirect(w, r, "/error/invalid-command", http.StatusTemporaryRedirect)
+			// Otherwise redirect to the no-direct-access error
+			RedirectToError(w, r, "/error/invalid-command", http.StatusTemporaryRedirect)
 			return
-		}
-
-		// For non-error routes, set the redirect cookie before redirecting to an error page
-		if r.Header.Get("X-Error-Redirect") == "true" {
-			redirectCookie := &http.Cookie{
-				Name:     "redirect-token",
-				Value:    "true",
-				Path:     "/",
-				MaxAge:   10, // Short-lived
-				HttpOnly: true,
-				Secure:   true,
-				SameSite: http.SameSiteStrictMode,
-			}
-			http.SetCookie(w, redirectCookie)
 		}
 
 		// For all other requests, just pass through
