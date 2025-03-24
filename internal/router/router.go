@@ -52,6 +52,7 @@ func Init() {
 		middleware.RequireCharacterName,
 		middleware.RequireCharacterClass,
 		middleware.RequireNoProgression,
+		middleware.RequireGameState,
 	))
 	http.HandleFunc("/error/", middleware.Register(HandleError,
 		middleware.BlockDirectAccess,
