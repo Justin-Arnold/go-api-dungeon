@@ -7,8 +7,13 @@
             headers: {
                 'Accept': 'application/json'
             }
+        }).then(() => {
+            let gameState = window.GameState.getAll()
+            
+            document.getElementById('characterName').innerText = gameState.characterName
+            document.getElementById('characterClass').innerText = gameState.characterClass
         })
-    });
+    })
 </script>
 {{end}}
 
