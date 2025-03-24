@@ -51,7 +51,6 @@ func HandleError(w http.ResponseWriter, r *http.Request) {
 		http.SetCookie(w, redirectCookie)
 		RenderTemplate(w, "errors/invalid-command", data)
 		return
-		return
 	case "missing-class":
 		fmt.Println("Missing class!")
 		redirectCookie := &http.Cookie{
