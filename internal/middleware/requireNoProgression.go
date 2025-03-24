@@ -15,15 +15,14 @@ func RequireNoProgression(next http.Handler) http.Handler {
 
 		if r.Header.Get("Accept") == "application/json" {
 
-			// gameState := GameState{
-			// 	CharacterName:  r.Header.Get("X-Character-Name"),
-			// 	CharacterClass: r.Header.Get("X-Character-Class"),
-			// 	CurrentRoom:    r.Header.Get("X-Current-Room"),
-			// }
-			// // Add the game state to the request context
-			// ctx := context.WithValue(r.Context(), "gameState", gameState)
-			// next.ServeHTTP(w, r.WithContext(ctx))
-			// return
+			gameState := GameState{
+				CurrentRoom: r.Header.Get("X-Current-Room"),
+			}
+
+			if gameState.CurrentRoom != "" && gameState.CurrentRoom != "start" {
+				RedirectToError(w, r, "invalid-command", http.StatusTemporaryRedirect)
+				return
+			}
 		}
 
 		// For non-API requests, just pass through
