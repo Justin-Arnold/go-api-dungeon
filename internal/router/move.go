@@ -86,35 +86,4 @@ func HandleMove(w http.ResponseWriter, r *http.Request) {
 	}
 
 	RenderTemplate(w, "move", data)
-
-	// Convert room to JSON and send response
-	// w.Header().Set("Content-Type", "application/json")
-	// json.NewEncoder(w).Encode(newRoom)
-
-	// if r.Header.Get("Accept") == "application/json" {
-	// 	w.Header().Set("Content-Type", "application/json")
-
-	// 	// Return game state as JSON
-	// 	gameState := map[string]interface{}{
-	// 		"characterName": characterName,
-	// 		"currentRoom":   "start",
-	// 		// Add any other initial state you want
-	// 	}
-
-	// 	if err := json.NewEncoder(w).Encode(gameState); err != nil {
-	// 		http.Error(w, "Failed to encode response", http.StatusInternalServerError)
-	// 		return
-	// 	}
-	// 	return
-	// }
-
-	// data := &TemplateData{
-	// 	CharacterName: characterName,
-	// 	Classes: []dungeon.ClassInfo{
-	// 		{
-	// 			Type:        dungeon.ClassShinobi,
-	// 			Description: dungeon.GetClassDescription(dungeon.ClassShinobi),
-	// 		},
-	// 	},
-	// }
 }
