@@ -32,8 +32,8 @@ func HandleChooseClass(w http.ResponseWriter, r *http.Request) {
 
 		// Return game state as JSON
 		gameState := map[string]interface{}{
-			"characterClass":  className,
-			"characterDamage": classStats.Damage,
+			"CharacterClass":  className,
+			"CharacterDamage": classStats.Damage,
 			// Add any other initial state you want
 		}
 

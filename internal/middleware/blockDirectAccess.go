@@ -1,7 +1,6 @@
 package middleware
 
 import (
-	"fmt"
 	"net/http"
 	"strings"
 )
@@ -19,11 +18,7 @@ func BlockDirectAccess(next http.Handler) http.Handler {
 			// Check for our redirect cookie
 			cookie, err := r.Cookie("redirect-token")
 
-			fmt.Println("Error route accessed", cookie)
-			fmt.Println("Error route accessed", err)
-
 			if err == nil && cookie.Value == "true" {
-				fmt.Println("Redirect token found", cookie)
 				// This is a legitimate redirect, clear the cookie and allow access
 				clearCookie := &http.Cookie{
 					Name:     "redirect-token",
@@ -36,10 +31,6 @@ func BlockDirectAccess(next http.Handler) http.Handler {
 				}
 				http.SetCookie(w, clearCookie)
 
-				fmt.Println("Redirect token cleared", w)
-
-				// Allow access to the error page
-				fmt.Println("Error route accessed directly", cookie)
 				next.ServeHTTP(w, r)
 				return
 			}
@@ -48,7 +39,6 @@ func BlockDirectAccess(next http.Handler) http.Handler {
 			// // break the potential loop and just show the page
 			// if strings.Contains(r.URL.Path, "/error/invalid-command") &&
 			// 	strings.Contains(r.Referer(), "/error/") {
-			// 	fmt.Println("Preventing redirect loop, showing invalid-command page")
 			// 	next.ServeHTTP(w, r)
 			// 	return
 			// }

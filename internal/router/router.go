@@ -31,6 +31,7 @@ func Init() {
 		middleware.RequireGameState,
 		middleware.RequireCharacterName,
 		middleware.RequireCharacterClass,
+		middleware.RequireRoomCompletion,
 	))
 	http.HandleFunc("/look/", middleware.Register(HandleLook,
 		middleware.RequireGameState,
@@ -71,6 +72,7 @@ func RenderTemplate(w http.ResponseWriter, tmpl string, data *TemplateData) {
 		"templates/errors/invalid-command.html",
 		"templates/errors/missing-class.html",
 		"templates/errors/missing-name.html",
+		"templates/errors/room-not-complete.html",
 		"templates/"+tmpl+".html",
 	))
 

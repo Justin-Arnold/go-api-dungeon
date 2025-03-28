@@ -23,14 +23,14 @@
             console.log(1, gameState)
             // Save all returned game state
             Object.entries(gameState).forEach(([key, value]) => {
-                if (key !== 'redirectTo') {
+                if (key !== 'RedirectTo') {
                     window.GameState.save(key, value);
                 }
             });
 
             // Then redirect
-            if (gameState.redirectTo) {
-                window.location.href = gameState.redirectTo;
+            if (gameState.RedirectTo) {
+                window.location.href = gameState.RedirectTo;
             }
         })
         .catch(error => {

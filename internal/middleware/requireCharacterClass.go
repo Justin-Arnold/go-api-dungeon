@@ -1,7 +1,6 @@
 package middleware
 
 import (
-	"fmt"
 	"net/http"
 )
 
@@ -14,7 +13,6 @@ func RequireCharacterClass(next http.Handler) http.Handler {
 
 			if characterClass == "" {
 				// When redirecting to an error page
-				fmt.Println("Character class not found")
 				RedirectToError(w, r, "missing-class", http.StatusTemporaryRedirect)
 				return
 			}

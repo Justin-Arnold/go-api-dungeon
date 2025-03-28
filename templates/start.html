@@ -7,12 +7,22 @@
             headers: {
                 'Accept': 'application/json'
             }
-        }).then(() => {
-            let gameState = window.GameState.getAll()
-            
-            document.getElementById('characterName').innerText = gameState.characterName
-            document.getElementById('characterClass').innerText = gameState.characterClass
+        }) .then(response => {
+            console.log('r', response)
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json()
         })
+        .then(gameState => {
+            window.GameState.updateState(gameState)
+            
+            document.getElementById('characterName').innerText = gameState.CharacterName
+            document.getElementById('characterClass').innerText = gameState.CharacterClass
+        })
+        .catch(error => {
+            console.error('Error:', JSON.stringify(error));
+        });
     })
 </script>
 {{end}}

@@ -1,16 +1,9 @@
 package middleware
 
 import (
-	"fmt"
 	"net/http"
 	"strings"
 )
-
-type GameState struct {
-	CharacterName  string
-	CharacterClass string
-	CurrentRoom    string
-}
 
 type Middleware func(next http.Handler) http.Handler
 
@@ -44,7 +37,6 @@ func RedirectToError(w http.ResponseWriter, r *http.Request, errorPath string, s
 	if !strings.HasPrefix(errorPath, "/error/") {
 		errorPath = "/error/" + strings.TrimPrefix(errorPath, "/")
 	}
-	fmt.Println("Redirecting to error page", errorPath)
 
 	http.Redirect(w, r, errorPath, http.StatusTemporaryRedirect)
 }

@@ -4,8 +4,8 @@
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         currentGameState = window.GameState.getAll();
-        if (currentGameState.currentRoom) {
-            window.location.href = `/room/${currentGameState.currentRoom}`;
+        if (currentGameState.CurrentRoom) {
+            window.location.href = `/room/${currentGameState.CurrentRoom}`;
         }
     });
 </script>

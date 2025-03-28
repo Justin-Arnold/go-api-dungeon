@@ -28,8 +28,8 @@ func HandleCreateCharacter(w http.ResponseWriter, r *http.Request) {
 
 		// Return game state as JSON
 		gameState := map[string]interface{}{
-			"characterName": characterName,
-			"currentRoom":   "start",
+			"CharacterName": characterName,
+			"CurrentRoom":   "start",
 			// Add any other initial state you want
 		}
 

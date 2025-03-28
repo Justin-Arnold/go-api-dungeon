@@ -1,7 +1,6 @@
 package middleware
 
 import (
-	"fmt"
 	"net/http"
 )
 
@@ -14,7 +13,6 @@ func RequireCharacterName(next http.Handler) http.Handler {
 
 			if characterName == "" {
 				// When redirecting to an error page
-				fmt.Println("Character name not found")
 				RedirectToError(w, r, "missing-name", http.StatusTemporaryRedirect)
 				return
 			}

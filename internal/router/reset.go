@@ -11,9 +11,9 @@ func HandleReset(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 
 		gameState := map[string]interface{}{
-			"characterName":  nil,
-			"currentRoom":    nil,
-			"characterClass": nil,
+			"CharacterName":  nil,
+			"CurrentRoom":    nil,
+			"CharacterClass": nil,
 		}
 
 		if err := json.NewEncoder(w).Encode(gameState); err != nil {

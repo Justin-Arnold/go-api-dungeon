@@ -16,11 +16,12 @@
         window.fetch = async function() {
             // Get all game data from localStorage with prefixed keys
             const gameData = {
-                characterName: localStorage.getItem(window.APP_PREFIX + 'characterName'),
-                characterClass: localStorage.getItem(window.APP_PREFIX + 'characterClass'),
-                characterDamage:  localStorage.getItem(window.APP_PREFIX + 'characterDamage'),
-                currentEnemyHP: localStorage.getItem(window.APP_PREFIX + 'currentEnemyHP'),
-                currentRoom: localStorage.getItem(window.APP_PREFIX + 'currentRoom'),
+                characterName: localStorage.getItem(window.APP_PREFIX + 'CharacterName'),
+                characterClass: localStorage.getItem(window.APP_PREFIX + 'CharacterClass'),
+                characterDamage:  localStorage.getItem(window.APP_PREFIX + 'CharacterDamage'),
+                currentEnemyHP: localStorage.getItem(window.APP_PREFIX + 'CurrentEnemyHP'),
+                currentRoom: localStorage.getItem(window.APP_PREFIX + 'CurrentRoom'),
+                completedRooms: localStorage.getItem(window.APP_PREFIX + 'CompletedRooms'),
                 // Add any other game state you want to track
             };
 
@@ -39,6 +40,7 @@
                 'X-Character-Damage': gameData.characterDamage || '',
                 'X-Current-Enemy-Hp': gameData.currentEnemyHP || '',
                 'X-Current-Room': gameData.currentRoom || '',
+                'X-Completed-Rooms': gameData.completedRooms || '',
             };
 
             try {
@@ -97,8 +99,8 @@
             },
 
             saveCharacter: function(character) {
-                this.save('characterName', character.name);
-                this.save('characterClass', character.class);
+                this.save('CharacterName', character.name);
+                this.save('CharacterClass', character.class);
                 // Add other character properties as needed
             }
         };

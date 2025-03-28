@@ -25,7 +25,7 @@
             console.error('Error:', error);
             // Handle error (show message to user, etc.)
         });
-        const roomType =  window.GameState.get('currentRoomType')
+        const roomType =  window.GameState.get('CurrentRoomType')
          // Hide all room types first
         document.querySelectorAll('.room-content').forEach(el => {
             el.style.display = 'none';
@@ -38,9 +38,9 @@
                 if (currentRoom) {
                     currentRoom.style.display = 'block';
                     const element = document.getElementById('enemy-type')
-                    const enemyType = window.GameState.get('currentEnemy')
-                    const currentEnemyHp = window.GameState.get('currentEnemyHP')
-                    const currentEnemyMaxHp = window.GameState.get('currentEnemyMaxHP')
+                    const enemyType = window.GameState.get('CurrentEnemy')
+                    const currentEnemyHp = window.GameState.get('CurrentEnemyHP')
+                    const currentEnemyMaxHp = window.GameState.get('CurrentEnemyMaxHP')
                     // element.innerHTML = enemyType
                     //create child of element that is an image
                     element.innerHTML = `
@@ -62,14 +62,14 @@
                     console.log(1)
                     currentRoom.style.display = 'block';
                     const element = document.getElementById('choice-type')
-                    const eventType = window.GameState.get('currentEvent')
+                    const eventType = window.GameState.get('CurrentEvent')
                     element.innerHTML = "This feels like " + eventType
                 }
             case "TREASURE":
                 if (currentRoom) {
                     currentRoom.style.display = 'block';
                     const element = document.getElementById('treasure-type')
-                    const treasureName = window.GameState.get('treasureName')
+                    const treasureName = window.GameState.get('TreasureName')
                     element.innerHTML = "Is that a " + treasureName + "!?"
                 }
             default:

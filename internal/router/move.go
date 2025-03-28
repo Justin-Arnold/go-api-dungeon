@@ -26,24 +26,18 @@ func HandleMove(w http.ResponseWriter, r *http.Request) {
 	}
 
 	d := dungeon.CreateDungeon()
-	fmt.Print(1)
 
 	if r.Header.Get("Accept") == "application/json" {
 		w.Header().Set("Content-Type", "application/json")
-		fmt.Print(2)
 
 		currentRoomID := r.Header.Get("X-Current-Room")
-		fmt.Print(9)
 		// Check if movement is possible
 		if !d.CanMove(currentRoomID, moveDirection) {
 			http.Error(w, "Cannot move in that direction", http.StatusBadRequest)
 			return
 		}
-
-		fmt.Print(3)
 		// Get the new room ID from the current room's connections
 		newRoomID := d.Rooms[currentRoomID].Connections[moveDirection]
-		fmt.Print(4)
 		// Get the new room
 		newRoom, exists := d.Rooms[newRoomID]
 		if !exists {
@@ -53,22 +47,21 @@ func HandleMove(w http.ResponseWriter, r *http.Request) {
 
 		// Return game state as JSON
 		gameState := map[string]interface{}{
-			"currentRoom":     newRoom.ID,
-			"currentRoomType": newRoom.Type,
-			"redirectTo":      fmt.Sprintf("/room/%s", newRoom.ID),
+			"CurrentRoom":     newRoom.ID,
+			"CurrentRoomType": newRoom.Type,
+			"RedirectTo":      fmt.Sprintf("/room/%s", newRoom.ID),
 		}
 
 		switch content := newRoom.Content.(type) {
 		case dungeon.CombatContent:
-			gameState["currentEnemy"] = content.EnemyType
-			gameState["currentEnemyHP"] = content.HP
-			gameState["currentEnemyDamage"] = content.Damage
-			gameState["currentEnemyMaxHP"] = content.HP
-			fmt.Print("Start1")
+			gameState["CurrentEnemy"] = content.EnemyType
+			gameState["CurrentEnemyHP"] = content.HP
+			gameState["CurrentEnemyDamage"] = content.Damage
+			gameState["CurrentEnemyMaxHP"] = content.HP
 		case dungeon.EventContent:
-			gameState["currentEvent"] = content.EventType
+			gameState["CurrentEvent"] = content.EventType
 		case dungeon.TreasureContent:
-			gameState["treasureName"] = content.EventTreasure.Name
+			gameState["TreasureName"] = content.EventTreasure.Name
 		default:
 			fmt.Print("BAD")
 		}
