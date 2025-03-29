@@ -14,13 +14,11 @@
                 throw new Error('Network response was not ok');
             }
             if (response.redirected) {
-                console.log('redirrect')
                 window.location.href = response.url;
             }
             return response.json()
         })
         .then(gameState => {
-            console.log(1, gameState)
             // Save all returned game state
             Object.entries(gameState).forEach(([key, value]) => {
                 if (key !== 'RedirectTo') {

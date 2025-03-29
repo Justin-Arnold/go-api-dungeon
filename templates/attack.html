@@ -13,8 +13,6 @@
             }
             return response.json()
         }).then(gameState => {
-
-            console.log(1, gameState)
             // Save all returned game state
             Object.entries(gameState).forEach(([key, value]) => {
                 if (key !== 'redirectTo') {

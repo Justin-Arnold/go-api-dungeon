@@ -10,7 +10,6 @@
             }
         })
         .then(response => {
-            console.log('r', response)
             if (!response.ok) {
                 const contentDiv = document.getElementById('content');
                 contentDiv.innerHTML = `
@@ -25,7 +24,6 @@
             return response.json()
         })
         .then(gameState => {
-            console.log('gs', gameState)
             // Save all returned game state
             window.GameState.updateState(gameState)
 

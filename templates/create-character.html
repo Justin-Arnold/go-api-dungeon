@@ -16,14 +16,10 @@
             return response.json()
         })
         .then(gameState => {
-            console.log(1, gameState)
             // Save all returned game state
             Object.entries(gameState).forEach(([key, value]) => {
                 window.GameState.save(key, value);
             });
-
-            console.log(2, window.GameState.get('characterName'))
-
             // Redirect to class selection
             // window.location.href = '/choose-class';
         })

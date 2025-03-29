@@ -8,7 +8,6 @@
                 'Accept': 'application/json'
             }
         }) .then(response => {
-            console.log('r', response)
             if (!response.ok) {
                 throw new Error('Network response was not ok');
             }
