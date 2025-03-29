@@ -10,13 +10,9 @@ func HandleReset(w http.ResponseWriter, r *http.Request) {
 	if r.Header.Get("Accept") == "application/json" {
 		w.Header().Set("Content-Type", "application/json")
 
-		gameState := map[string]interface{}{
-			"CharacterName":  nil,
-			"CurrentRoom":    nil,
-			"CharacterClass": nil,
-		}
+		data := map[string]string{}
 
-		if err := json.NewEncoder(w).Encode(gameState); err != nil {
+		if err := json.NewEncoder(w).Encode(data); err != nil {
 			http.Error(w, "Failed to encode response", http.StatusInternalServerError)
 			return
 		}

@@ -31,6 +31,7 @@ func Init() {
 		middleware.RequireGameState,
 		middleware.RequireCharacterName,
 		middleware.RequireCharacterClass,
+		middleware.RequireStart,
 		middleware.RequireRoomCompletion,
 	))
 	http.HandleFunc("/look/", middleware.Register(HandleLook,
@@ -47,6 +48,7 @@ func Init() {
 		middleware.RequireGameState,
 		middleware.RequireCharacterName,
 		middleware.RequireCharacterClass,
+		middleware.RequireStart,
 	))
 	http.HandleFunc("/reset/", HandleReset)
 	http.HandleFunc("/start", middleware.Register(HandleStart,

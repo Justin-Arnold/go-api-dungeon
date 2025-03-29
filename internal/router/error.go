@@ -78,6 +78,19 @@ func HandleError(w http.ResponseWriter, r *http.Request) {
 		http.SetCookie(w, redirectCookie)
 		RenderTemplate(w, "errors/missing-name", data)
 		return
+	case "not-started":
+		redirectCookie := &http.Cookie{
+			Name:     "redirect-token",
+			Value:    "true",
+			Path:     "/",
+			MaxAge:   10, // Short-lived
+			HttpOnly: true,
+			Secure:   true,
+			SameSite: http.SameSiteStrictMode,
+		}
+		http.SetCookie(w, redirectCookie)
+		RenderTemplate(w, "errors/not-started", data)
+		return
 	default:
 		// RenderTemplate(w, "errors/404", data)
 		return
