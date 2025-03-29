@@ -91,6 +91,19 @@ func HandleError(w http.ResponseWriter, r *http.Request) {
 		http.SetCookie(w, redirectCookie)
 		RenderTemplate(w, "errors/not-started", data)
 		return
+	case "invalid-class":
+		redirectCookie := &http.Cookie{
+			Name:     "redirect-token",
+			Value:    "true",
+			Path:     "/",
+			MaxAge:   10, // Short-lived
+			HttpOnly: true,
+			Secure:   true,
+			SameSite: http.SameSiteStrictMode,
+		}
+		http.SetCookie(w, redirectCookie)
+		RenderTemplate(w, "errors/invalid-class", data)
+		return
 	default:
 		// RenderTemplate(w, "errors/404", data)
 		return

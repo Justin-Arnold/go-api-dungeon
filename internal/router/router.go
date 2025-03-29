@@ -26,6 +26,7 @@ func Init() {
 	http.HandleFunc("/choose-class/", middleware.Register(HandleChooseClass,
 		middleware.RequireGameState,
 		middleware.RequireCharacterName,
+		middleware.RequireValidClass,
 	))
 	http.HandleFunc("/move/", middleware.Register(HandleMove,
 		middleware.RequireGameState,

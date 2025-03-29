@@ -122,3 +122,10 @@ func GetClassDescription(class ClassType) string {
 	}
 	return descriptions[class]
 }
+
+func VerifyClass(class string) bool {
+	parsedClass := ClassType(class)
+
+	_, ok := BaseStats[parsedClass]
+	return ok
+}
