@@ -3,10 +3,34 @@
 {{define "head"}}
 <script>
     document.addEventListener('DOMContentLoaded', function() {
+        fetch('/look/', {
+            headers: {
+                'Accept': 'application/json'
+            }
+        }).then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json()
+        }).then(gameState => {
+            // Save all returned game state
+            Object.entries(gameState).forEach(([key, value]) => {
+                if (key !== 'redirectTo') {
+                    window.GameState.save(key, value);
+                }
+            });
+
+            // Redirect to the specified URL
+            // if (gameState.redirectTo) {
+            //     window.location.href = gameState.redirectTo;
+            // }
+        }).catch(error => {
+            console.error('Error:', error);
+        });
         currentGameState = window.GameState.getAll();
-        if (currentGameState.CurrentRoom) {
-            window.location.href = `/room/${currentGameState.CurrentRoom}`;
-        }
+        // if (currentGameState.CurrentRoom) {
+        //     window.location.href = `/room/${currentGameState.CurrentRoom}`;
+        // }
     });
 </script>
 {{end}}

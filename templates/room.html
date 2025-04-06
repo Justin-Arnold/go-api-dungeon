@@ -12,9 +12,9 @@
             if (!response.ok) {
                 throw new Error('Network response was not ok');
             }
-            if (response.redirected) {
-                window.location.href = response.url;
-            }
+            // if (response.redirected) {
+            //     window.location.href = response.url;
+            // }
             return response.json()
         })
         .then(gameState => {

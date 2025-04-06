@@ -11,10 +11,7 @@
         })
         .then(response => {
             if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            if (response.redirected) {
-                window.location.href = response.url;
+                throw new Error('Network response was not ok', response);
             }
             return response.json()
         })
@@ -25,11 +22,36 @@
                     window.GameState.save(key, value);
                 }
             });
+            //set this cookie data
+            // redirectCookie := &http.Cookie{
+            // 	Name:     "redirect-token",
+            // 	Value:    "true",
+            // 	Path:     "/",
+            // 	MaxAge:   10, // Short-lived
+            // 	HttpOnly: true,
+            // 	Secure:   true,
+            // 	SameSite: http.SameSiteStrictMode,
+            // }
+            // http.SetCookie(w, redirectCookie)
 
-            // Then redirect
-            if (gameState.RedirectTo) {
-                window.location.href = gameState.RedirectTo;
+            const cookieName = 'redirect-token';
+            const cookieValue = 'true';
+            const maxAge = 10; // Short-lived
+            const path = '/';
+            const cookieString = `${cookieName}=${cookieValue}; Max-Age=${maxAge}; Path=${path}; Secure; HttpOnly; SameSite=Strict`;
+            document.cookie = cookieString;
+            // get game state for current room
+            const currentGameState = window.GameState.getAll();
+            if (currentGameState.CurrentRoom) {
+                // redirect there using cookie
+                window.location.href = `/room/${currentGameState.CurrentRoom}`;
+            } else {
+                // If no room is found, redirect to a default page
+                window.location.href = '/look/';
             }
+            
+
+
         })
         .catch(error => {
             console.error('Error:', error);
