@@ -46,6 +46,7 @@ func Init() {
 		middleware.RequireCharacterClass,
 	))
 	http.HandleFunc("/room/", middleware.Register(HandleRoom,
+		middleware.BlockDirectAccess,
 		middleware.RequireGameState,
 		middleware.RequireCharacterName,
 		middleware.RequireCharacterClass,

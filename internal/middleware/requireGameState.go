@@ -5,16 +5,24 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
+
+	"github.com/Justin-Arnold/go-api-dungeon/internal/dungeon"
 )
 
 // GameState holds the current game state data
 type GameState struct {
-	CharacterName   string
-	CharacterClass  string
-	CurrentRoom     string
-	CharacterDamage int
-	CurrentEnemyHP  int
-	CompletedRooms  []string
+	CharacterName      string
+	CharacterClass     string
+	CurrentRoom        string
+	CurrentRoomType    dungeon.RoomType
+	CurrentEvent       string
+	CurrentEnemy       string
+	CurrentEnemyDamage int
+	TreasureName       string
+	CharacterDamage    int
+	CurrentEnemyHP     int
+	CurrentEnemyMaxHP  int
+	CompletedRooms     []string
 }
 
 // Define a custom type for context keys

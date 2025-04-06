@@ -1,5 +1,7 @@
 package dungeon
 
+import "fmt"
+
 // RoomType represents the different types of rooms possible in the dungeon
 type RoomType string
 
@@ -81,6 +83,7 @@ func NewDungeon() *Dungeon {
 
 // CanMove checks if movement in a direction is possible
 func (d *Dungeon) CanMove(currentRoomID string, dir Direction) bool {
+	fmt.Print("CanMove")
 	room, exists := d.Rooms[currentRoomID]
 	if !exists {
 		return false

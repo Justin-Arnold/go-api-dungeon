@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/Justin-Arnold/go-api-dungeon/internal/dungeon"
+	"github.com/Justin-Arnold/go-api-dungeon/internal/middleware"
 )
 
 func HandleMove(w http.ResponseWriter, r *http.Request) {
@@ -30,14 +31,25 @@ func HandleMove(w http.ResponseWriter, r *http.Request) {
 	if r.Header.Get("Accept") == "application/json" {
 		w.Header().Set("Content-Type", "application/json")
 
-		currentRoomID := r.Header.Get("X-Current-Room")
-		// Check if movement is possible
-		if !d.CanMove(currentRoomID, moveDirection) {
-			http.Error(w, "Cannot move in that direction", http.StatusBadRequest)
+		gameState, ok := middleware.GetGameState(r.Context())
+		if !ok {
+			http.Error(w, "Failed to get game state", http.StatusInternalServerError)
 			return
 		}
+
+		fmt.Print(gameState.CurrentRoom)
+
+		// Check if movement is possible
+		if !d.CanMove(gameState.CurrentRoom, moveDirection) {
+			fmt.Print("Cannot move")
+			middleware.RedirectToError(w, r, "/error/invalid-direction", http.StatusTemporaryRedirect)
+			return
+		}
+		fmt.Print("Can move")
 		// Get the new room ID from the current room's connections
-		newRoomID := d.Rooms[currentRoomID].Connections[moveDirection]
+		newRoomID := d.Rooms[gameState.CurrentRoom].Connections[moveDirection]
+
+		fmt.Print(d.Rooms[gameState.CurrentRoom])
 		// Get the new room
 		newRoom, exists := d.Rooms[newRoomID]
 		if !exists {
@@ -45,27 +57,27 @@ func HandleMove(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		// Return game state as JSON
-		gameState := map[string]interface{}{
-			"CurrentRoom":     newRoom.ID,
-			"CurrentRoomType": newRoom.Type,
-			"RedirectTo":      fmt.Sprintf("/room/%s", newRoom.ID),
-		}
+		fmt.Print(newRoom)
+
+		gameState.CurrentRoom = newRoomID
+		gameState.CurrentRoomType = newRoom.Type
+
+		fmt.Print(newRoom.Content)
 
 		switch content := newRoom.Content.(type) {
 		case dungeon.CombatContent:
-			gameState["CurrentEnemy"] = content.EnemyType
-			gameState["CurrentEnemyHP"] = content.HP
-			gameState["CurrentEnemyDamage"] = content.Damage
-			gameState["CurrentEnemyMaxHP"] = content.HP
+			gameState.CurrentEnemy = content.EnemyType
+			gameState.CurrentEnemyHP = content.HP
+			gameState.CurrentEnemyDamage = content.Damage
+			gameState.CurrentEnemyMaxHP = content.HP
 		case dungeon.EventContent:
-			gameState["CurrentEvent"] = content.EventType
+			gameState.CurrentEvent = content.EventType
 		case dungeon.TreasureContent:
-			gameState["TreasureName"] = content.EventTreasure.Name
+			gameState.TreasureName = content.EventTreasure.Name
 		default:
 			fmt.Print("BAD")
 		}
-
+		fmt.Print("test")
 		if err := json.NewEncoder(w).Encode(gameState); err != nil {
 			http.Error(w, "Failed to encode response", http.StatusInternalServerError)
 			return
