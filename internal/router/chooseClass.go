@@ -1,11 +1,11 @@
 package router
 
 import (
-	"encoding/json"
 	"net/http"
 	"strings"
 
 	"github.com/Justin-Arnold/go-api-dungeon/internal/dungeon"
+	"github.com/Justin-Arnold/go-api-dungeon/internal/session"
 )
 
 func HandleChooseClass(w http.ResponseWriter, r *http.Request) {
@@ -22,32 +22,22 @@ func HandleChooseClass(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if r.Header.Get("Accept") == "application/json" {
-		w.Header().Set("Content-Type", "application/json")
+	classType := dungeon.ClassType(className)
+	classStats := dungeon.BaseStats[classType]
 
-		classType := dungeon.ClassType(className)
-
-		// get class info
-		classStats := dungeon.BaseStats[classType]
-
-		// Return game state as JSON
-		gameState := map[string]interface{}{
-			"CharacterClass":  className,
-			"CharacterDamage": classStats.Damage,
-			// Add any other initial state you want
-		}
-
-		if err := json.NewEncoder(w).Encode(gameState); err != nil {
-			http.Error(w, "Failed to encode response", http.StatusInternalServerError)
-			return
-		}
+	gameState, error := session.GetGameState(r)
+	if error != nil {
+		http.Error(w, "Error retrieving game state", http.StatusInternalServerError)
 		return
 	}
+	gameState.CharacterClass = className
+	gameState.CharacterDamage = classStats.Damage
+
+	session.SetGameState(w, r, gameState)
 
 	data := &TemplateData{
 		CharacterClass: dungeon.ClassType(className),
 	}
 
-	// Handle template rendering errors
 	RenderTemplate(w, "choose-class", data)
 }
