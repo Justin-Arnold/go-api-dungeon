@@ -1,16 +1,14 @@
 package router
 
 import (
-	"encoding/json"
 	"net/http"
 	"strings"
 
 	"github.com/Justin-Arnold/go-api-dungeon/internal/dungeon"
+	"github.com/Justin-Arnold/go-api-dungeon/internal/session"
 )
 
 func HandleCreateCharacter(w http.ResponseWriter, r *http.Request) {
-	// Extract the character name from the URL path
-	// Split the path into parts: ["", "create-character", "name"]
 	pathParts := strings.Split(r.URL.Path, "/")
 	if len(pathParts) != 3 {
 		http.NotFound(w, r)
@@ -23,22 +21,16 @@ func HandleCreateCharacter(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if r.Header.Get("Accept") == "application/json" {
-		w.Header().Set("Content-Type", "application/json")
-
-		// Return game state as JSON
-		gameState := map[string]interface{}{
-			"CharacterName": characterName,
-			"CurrentRoom":   "start",
-			// Add any other initial state you want
-		}
-
-		if err := json.NewEncoder(w).Encode(gameState); err != nil {
-			http.Error(w, "Failed to encode response", http.StatusInternalServerError)
-			return
-		}
+	gameState, error := session.GetGameState(r)
+	if error != nil {
+		http.Error(w, "Error retrieving game state", http.StatusInternalServerError)
 		return
 	}
+
+	gameState.CharacterName = characterName
+	gameState.CurrentRoom = "start"
+
+	session.SetGameState(w, r, gameState)
 
 	data := &TemplateData{
 		CharacterName: characterName,
