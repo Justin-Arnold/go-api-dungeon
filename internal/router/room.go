@@ -2,23 +2,45 @@ package router
 
 import (
 	"net/http"
+	"strconv"
+	"strings"
+
+	"github.com/Justin-Arnold/go-api-dungeon/internal/session"
 )
 
 func HandleRoom(w http.ResponseWriter, r *http.Request) {
 
-	if r.Header.Get("Accept") == "application/json" {
-		w.Header().Set("Content-Type", "application/json")
-
-		// currentRoom := r.Header.Get("X-Current-Room")
-
-		// data := &TemplateData{
-		// 	CurrentEnemy: currentEnemy,
-		// }
-
-		// RenderTemplate(w, "room", data)
+	state, errror := session.GetGameState(r)
+	if errror != nil {
+		http.Error(w, "Game state not found", http.StatusInternalServerError)
+		return
 	}
 
-	data := &TemplateData{}
+	data := &TemplateData{
+		RoomType:               string(state.CurrentRoomType),
+		CurrentEnemy:           state.CurrentEnemy,
+		CurrentEnemyHP:         state.CurrentEnemyHP,
+		CurrentEnemyMaxHP:      state.CurrentEnemyMaxHP,
+		EnemyImageURL:          getEnemyImageURL(state),
+		EnemyHealthInlineStyle: getHealthBarInlineStyle(state),
+	}
 
 	RenderTemplate(w, "room", data)
+}
+
+func getHealthBarInlineStyle(state session.GameState) string {
+	healthPercentage := (state.CurrentEnemyHP * 100) / state.CurrentEnemyMaxHP
+	inlineStyle := "width: " + strconv.Itoa(healthPercentage) + "%;"
+
+	return inlineStyle
+}
+
+func getEnemyImageURL(state session.GameState) string {
+	enemyType := state.CurrentEnemy
+	enemyType = strings.ToLower(enemyType)
+	enemyType = strings.ReplaceAll(enemyType, " ", "-")
+	concatenatedURL := "/static/enemy-" + enemyType + ".webp"
+
+	return concatenatedURL
+
 }
