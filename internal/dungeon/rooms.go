@@ -55,7 +55,41 @@ func CreateDungeon() *Dungeon {
 		},
 		Content: EventContent{
 			EventType:   "Choice",
-			Description: "Filler",
+			Description: "A voice from the shadows fills the room, heads or tails?",
+			Choices: []Option{
+				{
+					Text: "Heads",
+					Reward: Reward{
+						Gold:       0,
+						Experience: 0,
+						StatEffects: []StatEffect{
+							{
+								Name:        "Profane Strength",
+								Description: "You feel yourself grow stronger",
+								Stat:        "Damage",
+								Change:      5,
+								ChangeType:  "addition",
+							},
+						},
+					},
+				},
+				{
+					Text: "Tails",
+					Reward: Reward{
+						Gold:       0,
+						Experience: 0,
+						StatEffects: []StatEffect{
+							{
+								Name:        "Curse of Enfeeblement",
+								Description: "You feel yourself grow weaker",
+								Stat:        "Damage",
+								Change:      3,
+								ChangeType:  "subtraction",
+							},
+						},
+					},
+				},
+			},
 		},
 	}
 
