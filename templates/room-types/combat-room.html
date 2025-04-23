@@ -1,39 +1,6 @@
 {{define "title"}}Fight{{end}}
 
-{{define "head"}}
-<script>
-    // document.addEventListener('DOMContentLoaded', function() {
-    //     const currentEnemy =  window.GameState.get('currentEnemy')
-    //     const contentDiv = document.getElementById('content');
-    //     contentDiv.innerHTML = currentEnemy
-    //     // Make a fetch request to get initial game state
-    //     fetch('/room/', {
-    //         headers: {
-    //             'Accept': 'application/json'
-    //         }
-    //     })
-    //     .then(response => {
-    //         if (!response.ok) {
-    //             throw new Error('Network response was not ok');
-    //         }
-    //         return response.json()
-    //     })
-    //     .then(gameState => {
-
-    //         // Save all returned game state
-    //         Object.entries(gameState).forEach(([key, value]) => {
-    //             if (key !== 'redirectTo') {
-    //                 window.GameState.save(key, value);
-    //             }
-    //         });
-    //     })
-    //     .catch(error => {
-    //         console.error('Error:', error);
-    //         // Handle error (show message to user, etc.)
-    //     });
-    // });
-</script>
-{{end}}
+{{define "head"}}{{end}}
 
 {{define "combat-room"}}
 <h1 class="text-3xl">
@@ -42,7 +9,13 @@
 <p class="font-serif">
     Get ready for a fight.
 </p>
-<p id="enemy-type" class="font-serif mt-8">
-    loading...
-</p>
+<p class="w-full text-lg">{{.CurrentEnemy}}</p>
+<div class="w-full bg-slate-400 rounded mt-2 mb-4 relative">
+    <div class="h-6 bg-red-700 rounded" style="{{.EnemyHealthInlineStyle}}"></div>
+    <p class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 font-mono text-sm">
+        {{.CurrentEnemyHP}} / {{.CurrentEnemyMaxHP}}
+    </p>
+</div>
+<img id="enemy-image" width="300px" src="{{.EnemyImageURL}}" />
+
 {{end}}
