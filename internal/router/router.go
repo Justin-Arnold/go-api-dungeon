@@ -9,20 +9,27 @@ import (
 )
 
 type TemplateData struct {
-	CharacterName  string
-	Character      dungeon.Character
-	Classes        []dungeon.ClassInfo
-	CharacterClass dungeon.ClassType
-	MoveDirection  dungeon.Direction
-	CurrentEnemy   string
-	RedirectTo     string
-	ErrorTitle     string
-	ErrorMessage   string
+	CharacterName          any
+	Character              dungeon.Character
+	Classes                []dungeon.ClassInfo
+	CharacterClass         any
+	MoveDirection          dungeon.Direction
+	RoomType               string
+	CurrentEnemy           string
+	RedirectTo             string
+	ErrorTitle             string
+	ErrorMessage           string
+	EnemyHealthInlineStyle string
+	CurrentEnemyMaxHP      int
+	CurrentEnemyHP         int
+	EnemyImageURL          string
 	// Add fields as needed
 }
 
 func Init() {
-	http.HandleFunc("/create-character/", HandleCreateCharacter)
+	http.HandleFunc("/create-character/", middleware.Register(HandleCreateCharacter,
+		middleware.RequireGameState,
+	))
 	http.HandleFunc("/choose-class/", middleware.Register(HandleChooseClass,
 		middleware.RequireGameState,
 		middleware.RequireCharacterName,
@@ -52,12 +59,14 @@ func Init() {
 		middleware.RequireCharacterClass,
 		middleware.RequireStart,
 	))
-	http.HandleFunc("/reset/", HandleReset)
+	http.HandleFunc("/reset/", middleware.Register(HandleReset,
+		middleware.RequireGameState,
+	))
 	http.HandleFunc("/start", middleware.Register(HandleStart,
+		middleware.RequireGameState,
 		middleware.RequireCharacterName,
 		middleware.RequireCharacterClass,
 		middleware.RequireNoProgression,
-		middleware.RequireGameState,
 	))
 	http.HandleFunc("/error/", middleware.Register(HandleError,
 		middleware.BlockDirectAccess,
