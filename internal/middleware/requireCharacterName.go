@@ -2,26 +2,24 @@ package middleware
 
 import (
 	"net/http"
+
+	"github.com/Justin-Arnold/go-api-dungeon/internal/session"
 )
 
 func RequireCharacterName(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 
-		if r.Header.Get("Accept") == "application/json" {
-
-			characterName := r.Header.Get("X-Character-Name")
-
-			if characterName == "" {
-				// When redirecting to an error page
-				RedirectToError(w, r, "missing-name", http.StatusTemporaryRedirect)
-				return
-			}
-
-			next.ServeHTTP(w, r)
+		gameState, error := session.GetGameState(r)
+		if error != nil {
+			http.Error(w, "Error retrieving character name", http.StatusInternalServerError)
 			return
 		}
 
-		// For non-API requests, just pass through
+		if gameState.CharacterName == "" {
+			RedirectToError(w, r, "missing-name", http.StatusTemporaryRedirect)
+			return
+		}
+
 		next.ServeHTTP(w, r)
 	})
 }
