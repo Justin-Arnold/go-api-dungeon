@@ -42,11 +42,14 @@ type StatEffect struct {
 	Name        string `json:"name"`
 	Description string `json:"description"`
 	Stat        string `json:"stat"`
+	Change      int    `json:"change"`
+	ChangeType  string `json:"changeType"`
 }
 
 type EventContent struct {
-	EventType   string `json:"eventType"`
-	Description string `json:"description"`
+	EventType   string   `json:"eventType"`
+	Description string   `json:"description"`
+	Choices     []Option `json:"choices"`
 }
 
 type TreasureContent struct {
@@ -57,16 +60,15 @@ type TreasureContent struct {
 
 // Option represents a choice in an event room
 type Option struct {
-	Text       string `json:"text"`
-	Difficulty int    `json:"difficulty"`
-	Success    Reward `json:"success"`
-	Failure    Reward `json:"failure"`
+	Text   string `json:"text"`
+	Reward Reward `json:"reward"`
 }
 
 // Reward represents possible rewards from combat or events
 type Reward struct {
-	Gold       int `json:"gold"`
-	Experience int `json:"experience"`
+	Gold        int          `json:"gold"`
+	Experience  int          `json:"experience"`
+	StatEffects []StatEffect `json:"statEffects"`
 }
 
 // Dungeon represents the full dungeon structure
