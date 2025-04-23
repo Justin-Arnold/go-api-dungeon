@@ -1,6 +1,7 @@
 package router
 
 import (
+	"html/template"
 	"net/http"
 	"strconv"
 	"strings"
@@ -22,7 +23,7 @@ func HandleRoom(w http.ResponseWriter, r *http.Request) {
 		CurrentEnemyHP:         state.CurrentEnemyHP,
 		CurrentEnemyMaxHP:      state.CurrentEnemyMaxHP,
 		EnemyImageURL:          getEnemyImageURL(state),
-		EnemyHealthInlineStyle: getHealthBarInlineStyle(state),
+		EnemyHealthInlineStyle: template.CSS(getHealthBarInlineStyle(state)),
 	}
 
 	RenderTemplate(w, "room", data)

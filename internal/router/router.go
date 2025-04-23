@@ -19,7 +19,7 @@ type TemplateData struct {
 	RedirectTo             string
 	ErrorTitle             string
 	ErrorMessage           string
-	EnemyHealthInlineStyle string
+	EnemyHealthInlineStyle template.CSS
 	CurrentEnemyMaxHP      int
 	CurrentEnemyHP         int
 	EnemyImageURL          string
