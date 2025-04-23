@@ -23,5 +23,17 @@ func HandleAttack(w http.ResponseWriter, r *http.Request) {
 
 	state.CurrentEnemyHP = newEnemyHP
 
-	RenderTemplate(w, "attack", &TemplateData{})
+	session.SetGameState(w, r, state)
+
+	redirectCookie := &http.Cookie{
+		Name:     "redirect-token",
+		Value:    "true",
+		Path:     "/",
+		MaxAge:   10, // Short-lived
+		HttpOnly: true,
+		Secure:   true,
+		SameSite: http.SameSiteStrictMode,
+	}
+	http.SetCookie(w, redirectCookie)
+	http.Redirect(w, r, "/room/"+state.CurrentRoom, http.StatusTemporaryRedirect)
 }
