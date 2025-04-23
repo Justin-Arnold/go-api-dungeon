@@ -1,38 +1,18 @@
 {{define "title"}}Getting Started{{end}}
 
-{{define "head"}}
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-        fetch('/start', {
-            headers: {
-                'Accept': 'application/json'
-            }
-        }) .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return response.json()
-        })
-        .then(gameState => {
-            window.GameState.updateState(gameState)
-            
-            document.getElementById('characterName').innerText = gameState.CharacterName
-            document.getElementById('characterClass').innerText = gameState.CharacterClass
-        })
-        .catch(error => {
-            console.error('Error:', JSON.stringify(error));
-        });
-    })
-</script>
-{{end}}
+{{define "head"}}{{end}}
 
 {{define "content"}}
 <div id="content" class="max-w-2xl mx-auto">
     <h1 class="text-3xl font-bold mb-6">Adventure Start</h1>
     <div class="bg-gray-100 p-6 rounded-lg mb-6">
         <h2 class="text-xl font-semibold mb-2">Your Character</h2>
-        <p>Name: <span id="characterName" class="font-medium">Loading...</span></p>
-        <p>Class: <span id="characterClass" class="font-medium">Loading...</span></p>
+        <p>Name: <span id="characterName" class="font-medium">
+            {{if .CharacterName}}{{.CharacterName}}{{else}}Loading...{{end}}</span></p>
+        </span></p>
+        <p>Class: <span id="characterClass" class="font-medium">
+            {{if .CharacterClass}}{{.CharacterClass}}{{else}}Loading...{{end}}</span></p>
+        </span></p>
     </div>
     <div class="prose">
         <h2>Begin Your Journey</h2>
