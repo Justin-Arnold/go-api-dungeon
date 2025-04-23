@@ -47,7 +47,7 @@ var BaseStats = map[ClassType]Stats{
 		Speed:       15,   // Base 10
 		DodgeChance: 0.15, // Base 0,10
 		CritChance:  0.20, // Base 0.10
-		Luck:        1.00, //base 1.00
+		Luck:        1.00, // Base 1.00
 	},
 }
 
