@@ -1,13 +1,13 @@
 package router
 
 import (
-	"encoding/json"
 	"fmt"
 	"net/http"
 	"strings"
 
 	"github.com/Justin-Arnold/go-api-dungeon/internal/dungeon"
 	"github.com/Justin-Arnold/go-api-dungeon/internal/middleware"
+	"github.com/Justin-Arnold/go-api-dungeon/internal/session"
 )
 
 func HandleMove(w http.ResponseWriter, r *http.Request) {
@@ -20,7 +20,6 @@ func HandleMove(w http.ResponseWriter, r *http.Request) {
 	moveDirection := dungeon.Direction(pathParts[2])
 	switch moveDirection {
 	case dungeon.DirectionUp, dungeon.DirectionDown, dungeon.DirectionLeft, dungeon.DirectionRight:
-		// Direction is valid, continue processing
 	default:
 		http.Error(w, "Invalid direction. Must be up, down, left, or right", http.StatusBadRequest)
 		return
@@ -28,67 +27,57 @@ func HandleMove(w http.ResponseWriter, r *http.Request) {
 
 	d := dungeon.CreateDungeon()
 
-	if r.Header.Get("Accept") == "application/json" {
-		w.Header().Set("Content-Type", "application/json")
-
-		gameState, ok := middleware.GetGameState(r.Context())
-		if !ok {
-			http.Error(w, "Failed to get game state", http.StatusInternalServerError)
-			return
-		}
-
-		fmt.Print(gameState.CurrentRoom)
-
-		// Check if movement is possible
-		if !d.CanMove(gameState.CurrentRoom, moveDirection) {
-			fmt.Print("Cannot move")
-			middleware.RedirectToError(w, r, "/error/invalid-direction", http.StatusTemporaryRedirect)
-			return
-		}
-		fmt.Print("Can move")
-		// Get the new room ID from the current room's connections
-		newRoomID := d.Rooms[gameState.CurrentRoom].Connections[moveDirection]
-
-		fmt.Print(d.Rooms[gameState.CurrentRoom])
-		// Get the new room
-		newRoom, exists := d.Rooms[newRoomID]
-		if !exists {
-			http.Error(w, "Room not found", http.StatusInternalServerError)
-			return
-		}
-
-		fmt.Print(newRoom)
-
-		gameState.CurrentRoom = newRoomID
-		gameState.CurrentRoomType = newRoom.Type
-
-		fmt.Print(newRoom.Content)
-
-		switch content := newRoom.Content.(type) {
-		case dungeon.CombatContent:
-			gameState.CurrentEnemy = content.EnemyType
-			gameState.CurrentEnemyHP = content.HP
-			gameState.CurrentEnemyDamage = content.Damage
-			gameState.CurrentEnemyMaxHP = content.HP
-		case dungeon.EventContent:
-			gameState.CurrentEvent = content.EventType
-		case dungeon.TreasureContent:
-			gameState.TreasureName = content.EventTreasure.Name
-		default:
-			fmt.Print("BAD")
-		}
-		fmt.Print("test")
-		if err := json.NewEncoder(w).Encode(gameState); err != nil {
-			http.Error(w, "Failed to encode response", http.StatusInternalServerError)
-			return
-		}
+	state, error := session.GetGameState(r)
+	if error != nil {
+		http.Error(w, "Game state not found", http.StatusInternalServerError)
 		return
-		// http.Redirect(w, r, "/room/"+newRoomID, http.StatusTemporaryRedirect)
 	}
 
-	data := &TemplateData{
-		MoveDirection: moveDirection,
+	// Check if movement is possible
+	if !d.CanMove(state.CurrentRoom, moveDirection) {
+		middleware.RedirectToError(w, r, "/error/invalid-direction", http.StatusTemporaryRedirect)
+		return
+	}
+	newRoomID := d.Rooms[state.CurrentRoom].Connections[moveDirection]
+
+	newRoom, exists := d.Rooms[newRoomID]
+	if !exists {
+		http.Error(w, "Room not found", http.StatusInternalServerError)
+		return
 	}
 
-	RenderTemplate(w, "move", data)
+	state.CurrentRoom = newRoomID
+	state.CurrentRoomType = newRoom.Type
+
+	switch content := newRoom.Content.(type) {
+	case dungeon.CombatContent:
+		state.CurrentEnemy = content.EnemyType
+		state.CurrentEnemyHP = content.HP
+		state.CurrentEnemyDamage = content.Damage
+		state.CurrentEnemyMaxHP = content.HP
+	case dungeon.EventContent:
+		state.CurrentEvent = content.EventType
+		state.EventDescription = content.Description
+		state.EventChoices = content.Choices
+	case dungeon.TreasureContent:
+		state.TreasureName = content.EventTreasure.Name
+	default:
+		fmt.Print("BAD")
+	}
+
+	//redirect to the new room
+	session.SetGameState(w, r, state)
+
+	redirectCookie := &http.Cookie{
+		Name:     "redirect-token",
+		Value:    "true",
+		Path:     "/",
+		MaxAge:   10, // Short-lived
+		HttpOnly: true,
+		Secure:   true,
+		SameSite: http.SameSiteStrictMode,
+	}
+	http.SetCookie(w, redirectCookie)
+
+	http.Redirect(w, r, fmt.Sprintf("/room/%s", newRoomID), http.StatusSeeOther)
 }
