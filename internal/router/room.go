@@ -22,6 +22,9 @@ func HandleRoom(w http.ResponseWriter, r *http.Request) {
 		CurrentEnemy:           state.CurrentEnemy,
 		CurrentEnemyHP:         state.CurrentEnemyHP,
 		CurrentEnemyMaxHP:      state.CurrentEnemyMaxHP,
+		EventType:              state.CurrentEvent,
+		EventText:              state.EventDescription,
+		EventChoices:           getEventChoices(state),
 		EnemyImageURL:          getEnemyImageURL(state),
 		EnemyHealthInlineStyle: template.CSS(getHealthBarInlineStyle(state)),
 	}
@@ -44,4 +47,12 @@ func getEnemyImageURL(state session.GameState) string {
 
 	return concatenatedURL
 
+}
+
+func getEventChoices(state session.GameState) []string {
+	choices := make([]string, len(state.EventChoices))
+	for i, choice := range state.EventChoices {
+		choices[i] = choice.Text
+	}
+	return choices
 }

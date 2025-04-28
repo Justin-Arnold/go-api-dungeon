@@ -5,13 +5,26 @@
 {{end}}
 
 {{define "event-room"}}
-<h1>
-    What should you do?
-</h1>
-<p>
-    The Choice is yours
-</p>
 <p id="choice-type">
-    loading...
+    This feels like {{ .EventType }} 
 </p>
+<p id="choice-description">
+    {{ .EventText }}
+</p>
+
+<!-- if event type is Choice, give options test -->
+{{if eq .EventType "Choice"}}
+<div id="choice-options">
+    <p>What do you want to do?</p>
+    <ul>
+        {{range .EventChoices}}
+        <li>
+            <!-- <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"> -->
+                {{.}}
+            <!-- </button> -->
+        </li>
+        {{end}}
+    </ul>
+</div>
+{{end}}
 {{end}}

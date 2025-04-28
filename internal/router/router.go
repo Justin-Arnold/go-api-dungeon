@@ -23,6 +23,9 @@ type TemplateData struct {
 	CurrentEnemyMaxHP      int
 	CurrentEnemyHP         int
 	EnemyImageURL          string
+	EventType              string
+	EventText              string
+	EventChoices           []string
 	// Add fields as needed
 }
 
